@@ -187,8 +187,8 @@ class ContentSeeder extends Seeder
             'hero' => [
                 'type' => 'highImpact',
                 'eyebrow' => 'BPC HIPMI Bantul',
-                'richText' => '<h2>Pengusaha Muda Bantul, Tumbuh Bareng &amp; Saling Menguatkan</h2><p>Bergabung dengan jejaring pengusaha muda untuk kolaborasi, pendampingan UMKM, dan kontribusi nyata bagi ekonomi Bantul.</p>',
-                'links' => [$this->link('Daftar Jadi Anggota', '/daftar'), $this->link('Lihat Program', '/program', 'outline')],
+                'richText' => '<h2>Pengusaha Muda <strong>BPC HIPMI Bantul</strong> Tumbuh Bareng &amp; Saling Menguatkan</h2><p>Bergabung dengan jejaring pengusaha muda untuk kolaborasi, pendampingan UMKM, dan kontribusi nyata bagi ekonomi Bantul.</p>',
+                'links' => [$this->link('Daftar Jadi Anggota', '/daftar'), $this->link('Lihat Program', '/program', 'accent')],
             ],
             'layout' => [
                 $this->block('stats', [
@@ -211,7 +211,7 @@ class ContentSeeder extends Seeder
                 $this->block('archive', ['introContent' => '<h2>Kabar Terbaru</h2>', 'relationTo' => 'posts', 'limit' => 3]),
                 $this->block('partners', ['introContent' => '<h2>Didukung Oleh</h2>']),
                 $this->block('cta', [
-                    'richText' => '<h3>Siap tumbuh bareng pengusaha muda Bantul?</h3><p>Daftar sekarang dan tim OKK akan menghubungi kamu untuk tahap selanjutnya.</p>',
+                    'richText' => '<h3>Siap tumbuh bareng <strong>pengusaha muda Bantul</strong>?</h3><p>Daftar sekarang dan tim OKK akan menghubungi kamu untuk tahap selanjutnya.</p>',
                     'links' => [$this->link('Daftar Anggota', '/daftar')],
                 ]),
             ],
@@ -220,7 +220,7 @@ class ContentSeeder extends Seeder
         Page::updateOrCreate(['slug' => 'tentang'], [
             'title' => 'Tentang Kami',
             'status' => 'published',
-            'hero' => ['type' => 'lowImpact', 'eyebrow' => 'Tentang Kami', 'richText' => '<h2>Mengenal BPC HIPMI Bantul</h2><p>Visi, misi, dan orang-orang di balik organisasi.</p>', 'links' => []],
+            'hero' => ['type' => 'lowImpact', 'eyebrow' => 'Tentang Kami', 'richText' => '<h2>Mengenal <strong>BPC HIPMI Bantul</strong></h2><p>Visi, misi, dan orang-orang di balik organisasi.</p>', 'links' => []],
             'layout' => [
                 $this->block('content', [
                     'background' => 'default',
@@ -237,7 +237,7 @@ class ContentSeeder extends Seeder
         Page::updateOrCreate(['slug' => 'daftar'], [
             'title' => 'Daftar Anggota',
             'status' => 'published',
-            'hero' => ['type' => 'lowImpact', 'eyebrow' => 'Pendaftaran', 'richText' => '<h2>Bergabung dengan HIPMI Bantul</h2><p>Isi formulir berikut. Bidang OKK akan menghubungi kamu via WhatsApp.</p>', 'links' => []],
+            'hero' => ['type' => 'lowImpact', 'eyebrow' => 'Pendaftaran', 'richText' => '<h2>Bergabung dengan <strong>HIPMI Bantul</strong></h2><p>Isi formulir berikut. Bidang OKK akan menghubungi kamu via WhatsApp.</p>', 'links' => []],
             'layout' => [
                 $this->block('form', ['formType' => 'membership', 'introContent' => null, 'successMessage' => 'Terima kasih! Pendaftaranmu sudah kami terima. Tim OKK akan menghubungimu maksimal 3x24 jam.']),
                 $this->block('faq', [

@@ -80,8 +80,9 @@ class CmsFields
             TextInput::make('label')->label('Teks tombol')->required(),
             TextInput::make('url')->label('URL')->required()->placeholder('/daftar atau https://...'),
             Select::make('appearance')->label('Gaya')->options([
-                'default' => 'Utama (solid)',
-                'outline' => 'Outline',
+                'default' => 'Emas (utama)',
+                'accent' => 'Hijau',
+                'outline' => 'Outline emas',
             ])->default('default')->native(false),
             Toggle::make('newTab')->label('Buka di tab baru')->inline(false),
         ];

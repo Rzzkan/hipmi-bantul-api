@@ -69,7 +69,7 @@ class PageForm
             TextInput::make('hero.eyebrow')->label('Label kecil di atas judul')->placeholder('BPC HIPMI Bantul')
                 ->visible(fn (Get $get) => $get('hero.type') !== 'none'),
             CmsFields::richText('hero.richText', 'Teks hero')
-                ->helperText('Gunakan Heading 2 untuk judul utama.')
+                ->helperText('Gunakan Heading 2 untuk judul. Tebalkan (Bold) sebagian kata judul untuk efek gradasi emas → hijau.')
                 ->visible(fn (Get $get) => $get('hero.type') !== 'none'),
             CmsFields::links('hero.links', 2)
                 ->visible(fn (Get $get) => $get('hero.type') !== 'none'),
