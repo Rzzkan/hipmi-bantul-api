@@ -50,11 +50,17 @@ API mengubah data Filament `[{type, data}]` menjadi bentuk Payload `[{blockType,
 | GET | `/api/v1/posts?category=&page=&limit=` · `/posts/{slug}` | berita (paginated) |
 | GET | `/api/v1/events?when=upcoming\|past\|all` · `/events/{slug}` | agenda + sisa kuota |
 | GET | `/api/v1/programs?category=` · `/programs/{slug}` | program |
-| GET | `/api/v1/board-members?division=` | pengurus |
+| GET | `/api/v1/board-members?division={id}` | struktur pengurus: `inti` + `divisions[]` (Ketua/Wakil bidang + `compartments[].members`), tiap pengurus punya `socials` (Instagram/TikTok/LinkedIn) |
 | GET | `/api/v1/partners` | partner & sponsor |
 | POST | `/api/v1/registrations` | pendaftaran `membership` / `event` / `program` (rate limit 5/menit/IP, honeypot, cek kuota & duplikat) |
 
 Hanya konten berstatus **published** (dan tanggal terbit sudah lewat) yang keluar dari API. HTML dari rich editor disanitasi sebelum dikirim.
+
+## Struktur pengurus
+
+- **Organisasi → Bidang & Kompartemen**: 12 bidang sudah terisi (Bidang 1 Organisasi, Keanggotaan, dan Kaderisasi … Bidang 12 Investasi dan Kerjasama antar Daerah). Tambah satu atau lebih **kompartemen** per bidang langsung di form bidang.
+- **Organisasi → Pengurus**: pilih *Tingkat* (Pengurus Inti / Pimpinan Bidang / Kompartemen) → *Bidang* → *Kompartemen*, isi jabatan, foto, dan Instagram/TikTok/LinkedIn (boleh `@username` atau link).
+- Halaman **Tentang Kami** (block *Pengurus*) otomatis menampilkan bagan Pengurus Inti + kartu tiap bidang beserta kompartemennya.
 
 ## Fitur admin untuk OKK
 - **Pendaftar**: badge jumlah yang menunggu, tombol WA langsung, terima/tolak, catatan internal, **export CSV**.

@@ -2,12 +2,10 @@
 
 namespace App\Support;
 
-use App\Http\Resources\BoardMemberResource;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\PartnerResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\ProgramResource;
-use App\Models\BoardMember;
 use App\Models\Event;
 use App\Models\Partner;
 use App\Models\Post;
@@ -81,10 +79,11 @@ class BlockSerializer
             'archive' => self::archive($data),
             'team' => [
                 'introContent' => Html::clean($data['introContent'] ?? null),
-                'division' => $data['division'] ?? null,
-                'members' => BoardMemberResource::collection(
-                    BoardMember::active()->when($data['division'] ?? null, fn ($q, $d) => $q->where('division', $d))->get()
-                )->resolve(),
+                'showInti' => (bool) ($data['showInti'] ?? true),
+                'structure' => BoardStructure::build(
+                    ($data['division_id'] ?? null) ? (int) $data['division_id'] : null,
+                    (bool) ($data['showInti'] ?? true),
+                ),
             ],
             'partners' => [
                 'introContent' => Html::clean($data['introContent'] ?? null),

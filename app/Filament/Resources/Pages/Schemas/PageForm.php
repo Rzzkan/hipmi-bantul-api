@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Pages\Schemas;
 
 use App\Filament\Support\CmsFields;
-use App\Models\BoardMember;
+use App\Models\Division;
 use App\Models\Partner;
 use App\Models\Post;
 use App\Models\Program;
@@ -156,7 +156,10 @@ class PageForm
                     ->icon(Heroicon::OutlinedUserGroup)
                     ->schema([
                         CmsFields::richText('introContent', 'Intro'),
-                        Select::make('division')->label('Bidang (kosong = semua)')->options(BoardMember::DIVISIONS)->native(false),
+                        Toggle::make('showInti')->label('Tampilkan Pengurus Inti')->default(true),
+                        Select::make('division_id')->label('Hanya bidang tertentu (kosong = semua bidang)')
+                            ->options(fn () => Division::query()->ordered()->get()->mapWithKeys(fn ($d) => [$d->id => $d->label]))
+                            ->searchable()->native(false),
                     ]),
                 Block::make('partners')
                     ->label('Partner & Sponsor')

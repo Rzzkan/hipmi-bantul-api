@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\BoardMember;
+use App\Models\Division;
 use App\Models\Event;
 use App\Models\Page;
 use App\Models\Partner;
@@ -151,22 +152,45 @@ class ContentSeeder extends Seeder
         }
     }
 
+    /** Struktur BPC HIPMI Bantul: Pengurus Inti + 12 Bidang (kompartemen ditambah lewat admin). */
+    public const DIVISIONS = [
+        1 => 'Organisasi, Keanggotaan, dan Kaderisasi',
+        2 => 'Keuangan, Perbankan dan Perencanaan',
+        3 => 'ESDM, Lingkungan Hidup dan Kehutanan',
+        4 => 'Perindustrian dan Perdagangan',
+        5 => 'Sinergitas BUMD dan BUMDES',
+        6 => 'Maritim, Kelautan dan Perikanan',
+        7 => 'Pertanian, Perkebunan, dan Peternakan',
+        8 => 'Pariwisata, Ekonomi Kreatif dan Infokom',
+        9 => 'UMKM, Koperasi dan Kewirausahaan',
+        10 => 'Pembangunan Daerah, Infrastruktur dan Perhubungan',
+        11 => 'Pendidikan, Riset, Inovasi, Ketenagakerjaan, Kesehatan, Pemuda, dan Olahraga',
+        12 => 'Investasi dan Kerjasama antar Daerah',
+    ];
+
     protected function board(): void
     {
-        $items = [
-            ['Nama Ketua Umum', 'Ketua Umum', 'inti'],
-            ['Nama Sekretaris Umum', 'Sekretaris Umum', 'inti'],
-            ['Nama Bendahara Umum', 'Bendahara Umum', 'inti'],
-            ['Aditya', 'Ketua Bidang OKK', 'okk'],
-            ['Nama Ketua Bidang', 'Ketua Bidang UMKM & Ekraf', 'umkm'],
-            ['Nama Ketua Bidang', 'Ketua Bidang Humas & Media', 'humas'],
-        ];
-
-        foreach ($items as $i => [$name, $position, $division]) {
-            BoardMember::updateOrCreate(['position' => $position], [
-                'name' => $name, 'division' => $division, 'sort_order' => $i, 'is_active' => true,
-            ]);
+        foreach (self::DIVISIONS as $number => $name) {
+            Division::updateOrCreate(['number' => $number], ['name' => $name, 'sort_order' => $number, 'is_active' => true]);
         }
+
+        // Nama masih placeholder — ganti lewat menu Pengurus di admin.
+        $inti = [
+            ['Nama Ketua Umum', 'Ketua Umum'],
+            ['Nama Sekretaris Umum', 'Sekretaris Umum'],
+            ['Nama Bendahara', 'Bendahara'],
+        ];
+        foreach ($inti as $i => [$name, $position]) {
+            BoardMember::updateOrCreate(
+                ['level' => BoardMember::LEVEL_INTI, 'position' => $position],
+                ['name' => $name, 'sort_order' => $i, 'is_active' => true],
+            );
+        }
+
+        BoardMember::updateOrCreate(
+            ['level' => BoardMember::LEVEL_BIDANG, 'division_id' => Division::where('number', 1)->value('id'), 'position' => 'Ketua Bidang'],
+            ['name' => 'Aditya', 'sort_order' => 0, 'is_active' => true],
+        );
     }
 
     protected function partners(): void
@@ -229,7 +253,7 @@ class ContentSeeder extends Seeder
                         ['size' => 'half', 'richText' => '<h3>Misi</h3><ol><li>Mencetak pengusaha muda yang tangguh dan berdaya saing.</li><li>Mendampingi UMKM Bantul naik kelas.</li><li>Membangun sinergi antar anggota untuk pertumbuhan ekonomi daerah.</li></ol>', 'enableLink' => false],
                     ],
                 ]),
-                $this->block('team', ['introContent' => '<h2>Struktur Pengurus</h2>', 'division' => null]),
+                $this->block('team', ['introContent' => '<h2>Struktur Pengurus</h2><p>Susunan Badan Pengurus Cabang HIPMI Kabupaten Bantul.</p>', 'showInti' => true, 'division_id' => null]),
                 $this->block('cta', ['richText' => '<h3>Mau berkontribusi bersama kami?</h3>', 'links' => [$this->link('Daftar Anggota', '/daftar')]]),
             ],
         ]);
