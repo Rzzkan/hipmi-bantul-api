@@ -94,4 +94,22 @@ php artisan test
 
 Cek: `https://api.hipmibantul.com/api/v1/globals` (JSON) dan `https://api.hipmibantul.com/admin` (login).
 
-> `FRONTEND_REVALIDATE_SECRET` harus sama persis dengan `REVALIDATE_SECRET` di website. `CORS_ALLOWED_ORIGINS` sudah berisi `hipmibantul.com` & `www.hipmibantul.com` agar formulir pendaftaran bisa submit.
+### Hosting di Hostinger (shared hosting / hPanel)
+
+Di Hostinger, file subdomain ada di `domains/api.hipmibantul.com/public_html` dan **document root-nya adalah folder project, bukan `public/`**. File `.htaccess` di root repo ini sudah meneruskan semua request ke `public/`, jadi cukup upload/clone seluruh repo ke `public_html`.
+
+1. hPanel → **Databases → MySQL**: buat database + user (nama berawalan `u344886479_`).
+2. Upload repo ke `public_html` (Git di hPanel atau File Manager), lalu via **SSH** di folder itu:
+   ```bash
+   cp .env.production.example .env        # isi DB_DATABASE/DB_USERNAME/DB_PASSWORD dari langkah 1
+   composer install --no-dev --optimize-autoloader
+   php artisan key:generate
+   php artisan migrate --force --seed
+   php artisan storage:link
+   php artisan filament:optimize && php artisan optimize
+   ```
+   > Pastikan `DB_CONNECTION=mysql`. Jika `.env` masih `sqlite`, API akan error 500 ("Database file … database.sqlite does not exist").
+3. hPanel → **Website → CDN → Purge cache** agar respons 404 lama tidak tersimpan.
+4. Cek `https://api.hipmibantul.com/api/v1/globals` harus berisi JSON, dan `https://api.hipmibantul.com/storage/logs/laravel.log` harus **403/404** (tidak boleh terbuka).
+
+> `FRONTEND_REVALIDATE_SECRET` harus sama persis dengan `REVALIDATE_SECRET` di website. `CORS_ALLOWED_ORIGINS` sudah berisi `web.hipmibantul.com` & `www.hipmibantul.com` agar formulir pendaftaran bisa submit.

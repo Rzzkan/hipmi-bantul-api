@@ -1,0 +1,16 @@
+# ------------------------------------------------------------------
+# Shared hosting (Hostinger dll.) — document root domain mengarah ke
+# folder project, bukan ke /public. File ini meneruskan semua request
+# ke public/ sehingga hanya public/ yang bisa diakses dari internet.
+# (Tidak dipakai bila document root sudah diarahkan ke /public.)
+# ------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Lapis kedua: jangan pernah sajikan file rahasia/log/database.
+<FilesMatch "(^\.env|\.log$|\.sqlite$)">
+    Require all denied
+</FilesMatch>
