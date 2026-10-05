@@ -113,4 +113,20 @@ class BoardStructureTest extends TestCase
 
         $this->assertDatabaseHas('board_members', ['name' => 'Budi', 'compartment_id' => $comp->id, 'division_id' => $division->id, 'tiktok' => '@budi']);
     }
+
+    public function test_inti_chart_groups_multiple_deputies_under_secretary_and_treasurer(): void
+    {
+        foreach ([['Wakil Sekretaris Umum I', 1], ['Wakil Sekretaris Umum II', 2], ['Wakil Bendahara I', 3], ['Wakil Bendahara II', 4], ['Wakil Bendahara III', 5]] as [$pos, $order]) {
+            BoardMember::create(['name' => "Orang {$pos}", 'position' => $pos, 'level' => 'inti', 'sort_order' => 10 + $order]);
+        }
+
+        $chart = $this->getJson('/api/v1/board-members')->assertOk()->json('data.intiChart');
+
+        $this->assertSame(['Ketua Umum'], array_column($chart['ketua'], 'position'));
+        $this->assertSame(['Sekretaris Umum'], array_column($chart['sekretaris']['heads'], 'position'));
+        $this->assertSame(['Wakil Sekretaris Umum I', 'Wakil Sekretaris Umum II'], array_column($chart['sekretaris']['deputies'], 'position'));
+        $this->assertSame(['Bendahara'], array_column($chart['bendahara']['heads'], 'position'));
+        $this->assertCount(3, $chart['bendahara']['deputies']);
+        $this->assertSame([], $chart['others']);
+    }
 }

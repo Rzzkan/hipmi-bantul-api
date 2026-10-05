@@ -38,7 +38,10 @@ class BoardMemberForm
                         ->label('Jabatan')
                         ->required()
                         ->datalist(fn (Get $get) => BoardMember::POSITION_SUGGESTIONS[$get('level')] ?? [])
-                        ->placeholder(fn (Get $get) => BoardMember::POSITION_SUGGESTIONS[$get('level')][0] ?? 'Jabatan'),
+                        ->placeholder(fn (Get $get) => BoardMember::POSITION_SUGGESTIONS[$get('level')][0] ?? 'Jabatan')
+                        ->helperText(fn (Get $get) => $get('level') === BoardMember::LEVEL_INTI
+                            ? 'Wakil Sekretaris Umum & Wakil Bendahara boleh lebih dari satu orang — atur urutannya lewat kolom Urutan.'
+                            : null),
                     Select::make('division_id')
                         ->label('Bidang')
                         ->options(fn () => Division::query()->ordered()->get()->mapWithKeys(fn ($d) => [$d->id => $d->label]))

@@ -38,9 +38,41 @@ class BoardStructure
             ->values()
             ->all();
 
+        $inti = $withInti ? $members->where('level', BoardMember::LEVEL_INTI)->values() : collect();
+
         return [
-            'inti' => $withInti ? $present($members->where('level', BoardMember::LEVEL_INTI)) : [],
+            'inti' => $present($inti),
+            'intiChart' => self::intiChart($inti, $present),
             'divisions' => $divisions,
+        ];
+    }
+
+    /**
+     * Groups Pengurus Inti for the org chart, based on the position title:
+     *   Ketua Umum
+     *   ├─ Sekretaris Umum  → Wakil Sekretaris (bisa lebih dari satu)
+     *   └─ Bendahara        → Wakil Bendahara  (bisa lebih dari satu)
+     * Anything else (custom titles) goes to "others".
+     */
+    public static function intiChart($inti, callable $present): array
+    {
+        $is = fn (BoardMember $m, string $word) => str_contains(mb_strtolower($m->position), $word);
+
+        $sekretaris = $inti->filter(fn ($m) => $is($m, 'sekretaris'));
+        $bendahara = $inti->filter(fn ($m) => $is($m, 'bendahara'))->diffKeys($sekretaris);
+        $ketua = $inti->filter(fn ($m) => $is($m, 'ketua') && ! $is($m, 'wakil'))->diffKeys($sekretaris)->diffKeys($bendahara);
+        $others = $inti->diffKeys($sekretaris)->diffKeys($bendahara)->diffKeys($ketua);
+
+        $branch = fn ($group) => [
+            'heads' => $present($group->reject(fn ($m) => $is($m, 'wakil'))),
+            'deputies' => $present($group->filter(fn ($m) => $is($m, 'wakil'))),
+        ];
+
+        return [
+            'ketua' => $present($ketua),
+            'sekretaris' => $branch($sekretaris),
+            'bendahara' => $branch($bendahara),
+            'others' => $present($others),
         ];
     }
 }

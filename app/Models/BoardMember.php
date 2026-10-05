@@ -22,7 +22,8 @@ class BoardMember extends Model
 
     /** Saran jabatan per level (bisa diketik bebas di admin). */
     public const POSITION_SUGGESTIONS = [
-        self::LEVEL_INTI => ['Ketua Umum', 'Sekretaris Umum', 'Bendahara Umum', 'Bendahara', 'Wakil Ketua Umum', 'Wakil Sekretaris Umum', 'Wakil Bendahara Umum'],
+        // Tidak ada Wakil Ketua Umum. Wakil Sekretaris & Wakil Bendahara boleh lebih dari satu.
+        self::LEVEL_INTI => ['Ketua Umum', 'Sekretaris Umum', 'Wakil Sekretaris Umum', 'Bendahara', 'Wakil Bendahara'],
         self::LEVEL_BIDANG => ['Ketua Bidang', 'Wakil Ketua Bidang', 'Sekretaris Bidang'],
         self::LEVEL_KOMPARTEMEN => ['Ketua Kompartemen', 'Wakil Ketua Kompartemen', 'Anggota Kompartemen'],
     ];

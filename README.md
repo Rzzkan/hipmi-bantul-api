@@ -59,6 +59,7 @@ Hanya konten berstatus **published** (dan tanggal terbit sudah lewat) yang kelua
 ## Struktur pengurus
 
 - **Organisasi → Bidang & Kompartemen**: 12 bidang sudah terisi (Bidang 1 Organisasi, Keanggotaan, dan Kaderisasi … Bidang 12 Investasi dan Kerjasama antar Daerah). Tambah satu atau lebih **kompartemen** per bidang langsung di form bidang.
+- **Pengurus Inti**: Ketua Umum, Sekretaris Umum (+ Wakil Sekretaris Umum, boleh lebih dari satu), Bendahara (+ Wakil Bendahara, boleh lebih dari satu). Tidak ada Wakil Ketua Umum. Bagan dikelompokkan otomatis dari teks jabatan (mengandung "Sekretaris" / "Bendahara" / "Wakil").
 - **Organisasi → Pengurus**: pilih *Tingkat* (Pengurus Inti / Pimpinan Bidang / Kompartemen) → *Bidang* → *Kompartemen*, isi jabatan, foto, dan Instagram/TikTok/LinkedIn (boleh `@username` atau link).
 - Halaman **Tentang Kami** (block *Pengurus*) otomatis menampilkan bagan Pengurus Inti + kartu tiap bidang beserta kompartemennya.
 
