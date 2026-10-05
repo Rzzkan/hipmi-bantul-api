@@ -75,8 +75,23 @@ CORS_ALLOWED_ORIGINS=https://hipmibantul.id
 php artisan test
 ```
 
-## Deploy (ringkas)
-1. Server PHP 8.3 + ekstensi `intl`, `gd`/`imagick`, `zip`, `pdo_mysql`.
-2. `composer install --no-dev --optimize-autoloader`, set `.env` (`APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://api.hipmibantul.id`).
-3. `php artisan migrate --force && php artisan storage:link && php artisan filament:optimize && php artisan optimize`.
-4. Arahkan document root ke `public/`.
+## Deploy ke `https://api.hipmibantul.com`
+
+1. **DNS**: A record `api` → IP server.
+2. Server: PHP 8.3-FPM (+ `intl`, `gd`, `zip`, `pdo_mysql`), Composer, MySQL/MariaDB, Nginx.
+3. Clone repo ke `/var/www/hipmi-bantul-api`, lalu:
+   ```bash
+   cp .env.production.example .env      # isi bagian <ISI>
+   composer install --no-dev --optimize-autoloader
+   php artisan key:generate
+   php artisan migrate --force --seed   # --seed hanya saat pertama kali
+   php artisan storage:link
+   php artisan filament:optimize && php artisan optimize
+   sudo chown -R www-data:www-data storage bootstrap/cache
+   ```
+4. Nginx: salin `deploy/nginx-api.hipmibantul.com.conf` ke `/etc/nginx/sites-available/`, aktifkan, lalu `sudo certbot --nginx -d api.hipmibantul.com`.
+5. Update berikutnya cukup: `bash deploy/deploy.sh`.
+
+Cek: `https://api.hipmibantul.com/api/v1/globals` (JSON) dan `https://api.hipmibantul.com/admin` (login).
+
+> `FRONTEND_REVALIDATE_SECRET` harus sama persis dengan `REVALIDATE_SECRET` di website. `CORS_ALLOWED_ORIGINS` sudah berisi `hipmibantul.com` & `www.hipmibantul.com` agar formulir pendaftaran bisa submit.

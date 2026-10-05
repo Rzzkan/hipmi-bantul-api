@@ -43,7 +43,7 @@ class ContentSeeder extends Seeder
         Setting::put('site', [
             'name' => 'BPC HIPMI Bantul',
             'tagline' => 'Himpunan Pengusaha Muda Indonesia — Badan Pengurus Cabang Kabupaten Bantul',
-            'email' => 'sekretariat@hipmibantul.id',
+            'email' => 'sekretariat@hipmibantul.com',
             'phone' => null,
             'whatsapp' => null,
             'address' => 'Kabupaten Bantul, Daerah Istimewa Yogyakarta',
