@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->profile(isSimple: false) // menu Profil: ganti nama, email & password
             ->brandName('CMS HIPMI Bantul')
             ->colors([
                 'primary' => Color::hex('#0b3d91'),

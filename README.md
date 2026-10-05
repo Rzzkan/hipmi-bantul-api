@@ -21,8 +21,14 @@ php artisan storage:link                # agar gambar upload bisa diakses
 php artisan serve                       # http://localhost:8000
 ```
 
-Login admin: `http://localhost:8000/admin` → **admin@hipmibantul.id / password**
-(ubah lewat `ADMIN_EMAIL` & `ADMIN_PASSWORD` di `.env` sebelum seeding, dan **ganti password setelah login pertama**).
+Login admin: `http://localhost:8000/admin` → **okkhipmibantul@gmail.com / okkbergerak**
+(dibuat oleh `AdminUserSeeder`; bisa diubah lewat `ADMIN_EMAIL` & `ADMIN_PASSWORD` di `.env` sebelum seeding).
+Ganti password kapan saja lewat menu **Profil** (klik avatar di kanan atas admin).
+
+Membuat akun admin saja (tanpa konten contoh), misalnya di server production:
+```bash
+php artisan db:seed --class=AdminUserSeeder --force
+```
 
 ## Konsep (padanan Payload CMS)
 
