@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Partners\Tables;
 
 use App\Models\Partner;
+use App\Support\Media;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -17,7 +18,7 @@ class PartnersTable
     {
         return $table
             ->columns([
-                ImageColumn::make('logo')->disk('public'),
+                ImageColumn::make('logo')->disk(Media::diskName()),
                 TextColumn::make('name')->label('Nama')->searchable(),
                 TextColumn::make('tier')->badge()->formatStateUsing(fn ($state) => Partner::TIERS[$state] ?? $state),
                 ToggleColumn::make('is_active')->label('Tampil'),

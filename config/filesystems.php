@@ -16,6 +16,12 @@ return [
     'default' => env('FILESYSTEM_DISK', 'local'),
 
     /*
+    | Disk untuk semua gambar CMS (upload admin, gambar di editor berita).
+    | "public" = disk server (storage/app/public) · "r2" = Cloudflare R2.
+    */
+    'media_disk' => env('MEDIA_DISK', 'public'),
+
+    /*
     |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
@@ -45,6 +51,25 @@ return [
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
+        ],
+
+        // Cloudflare R2 — lihat App\Support\R2Filesystem (tanpa header ACL).
+        'r2' => [
+            'driver' => 'r2',
+            'key' => env('R2_ACCESS_KEY_ID'),
+            'secret' => env('R2_SECRET_ACCESS_KEY'),
+            'bucket' => env('R2_BUCKET'),
+            // https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+            'endpoint' => env('R2_ENDPOINT'),
+            // URL publik bucket: custom domain (mis. https://media.hipmibantul.com) atau https://pub-xxxx.r2.dev
+            'url' => env('R2_PUBLIC_URL'),
+            // Folder di dalam bucket, supaya bisa berbagi bucket dengan Katalog Bisnis
+            'root' => env('R2_ROOT', 'cms'),
+            'region' => 'auto',
+            'use_path_style_endpoint' => true,
+            'visibility' => 'public',
+            'throw' => true,
+            'report' => true,
         ],
 
         's3' => [

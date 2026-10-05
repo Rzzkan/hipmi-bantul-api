@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Posts\Tables;
 
 use App\Models\Post;
+use App\Support\Media;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -17,7 +18,7 @@ class PostsTable
     {
         return $table
             ->columns([
-                ImageColumn::make('cover_image')->label('')->disk('public')->square(),
+                ImageColumn::make('cover_image')->label('')->disk(Media::diskName())->square(),
                 TextColumn::make('title')->label('Judul')->searchable()->sortable()->limit(60),
                 TextColumn::make('category')->label('Kategori')->badge()->formatStateUsing(fn ($state) => Post::CATEGORIES[$state] ?? $state),
                 TextColumn::make('status')->badge()->color(fn (string $state) => $state === 'published' ? 'success' : 'gray'),

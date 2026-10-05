@@ -2,6 +2,7 @@
 
 namespace App\Filament\Support;
 
+use App\Support\Media;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -57,7 +58,7 @@ class CmsFields
                 ['attachFiles', 'table'],
                 ['undo', 'redo'],
             ])
-            ->fileAttachmentsDisk('public')
+            ->fileAttachmentsDisk(Media::diskName())
             ->fileAttachmentsDirectory('editor');
     }
 
@@ -67,7 +68,7 @@ class CmsFields
             ->label($label)
             ->image()
             ->imageEditor()
-            ->disk('public')
+            ->disk(Media::diskName())
             ->directory($directory)
             ->visibility('public')
             ->maxSize(4096);

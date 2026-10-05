@@ -69,6 +69,50 @@ Hanya konten berstatus **published** (dan tanggal terbit sudah lewat) yang kelua
 - **Organisasi → Pengurus**: pilih *Tingkat* (Pengurus Inti / Pimpinan Bidang / Kompartemen) → *Bidang* → *Kompartemen*, isi jabatan, foto, dan Instagram/TikTok/LinkedIn (boleh `@username` atau link).
 - Halaman **Tentang Kami** (block *Pengurus*) otomatis menampilkan bagan Pengurus Inti + kartu tiap bidang beserta kompartemennya.
 
+## Penyimpanan gambar — Cloudflare R2
+
+Semua gambar CMS (foto pengurus, sampul berita/agenda/program, logo partner, gambar di dalam artikel) disimpan di disk yang dipilih lewat `MEDIA_DISK`:
+
+| `MEDIA_DISK` | Lokasi | Kapan dipakai |
+|---|---|---|
+| `public` (default) | `storage/app/public` di server | development lokal |
+| `r2` | bucket Cloudflare R2 | **production** — cepat, tanpa biaya bandwidth, aman walau server pindah |
+
+Driver `r2` (`app/Support/R2Filesystem.php`) memakai S3 API dengan region `auto` dan **tidak mengirim header ACL** (R2 tidak mendukung ACL; driver `s3` bawaan Laravel selalu mengirimnya). Akses publik diatur di level bucket.
+
+### Setup di Cloudflare (sekali saja)
+1. **R2 → Create bucket**, mis. `hipmi-bantul` (boleh juga memakai bucket Katalog Bisnis — file CMS masuk folder `cms/` lewat `R2_ROOT`).
+2. **Bucket → Settings → Public access**:
+   - **Custom domain** (disarankan): hubungkan `media.hipmibantul.com` (domain harus memakai DNS Cloudflare), atau
+   - **r2.dev subdomain**: aktifkan untuk uji coba (dibatasi Cloudflare, tidak untuk production).
+3. **Bucket → Settings → CORS policy** — agar preview gambar di form admin bisa dimuat:
+   ```json
+   [{ "AllowedOrigins": ["https://api.hipmibantul.com"], "AllowedMethods": ["GET", "HEAD"], "AllowedHeaders": ["*"], "MaxAgeSeconds": 86400 }]
+   ```
+4. **R2 → Manage API tokens → Create API token**: izin *Object Read & Write*, batasi ke bucket tadi. Catat **Access Key ID**, **Secret Access Key**, dan endpoint `https://<ACCOUNT_ID>.r2.cloudflarestorage.com`.
+
+### Aktifkan di server
+```bash
+# .env
+MEDIA_DISK=r2
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_BUCKET=hipmi-bantul
+R2_ENDPOINT=https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+R2_PUBLIC_URL=https://media.hipmibantul.com
+R2_ROOT=cms
+```
+```bash
+composer install --no-dev -o            # memasang aws-sdk (league/flysystem-aws-s3-v3)
+php artisan config:clear
+php artisan media:migrate-to-r2 --dry-run   # cek dulu: berapa file & konten yang akan diubah
+php artisan media:migrate-to-r2             # salin gambar lama ke R2 + perbarui URL di artikel/halaman
+php artisan optimize
+```
+Perintah migrasi aman dijalankan berulang (file yang sudah ada di R2 dilewati). Path gambar di database tidak berubah; hanya URL absolut di dalam konten rich text yang diperbarui.
+
+Di website (Vercel), set `CMS_MEDIA_CDN_URL` ke URL publik yang sama (`https://media.hipmibantul.com`) supaya `next/image` mengizinkan domain tersebut (`*.r2.dev` sudah diizinkan otomatis).
+
 ## Fitur admin untuk OKK
 - **Pendaftar**: badge jumlah yang menunggu, tombol WA langsung, terima/tolak, catatan internal, **export CSV**.
 - **Dashboard**: pendaftar menunggu, agenda terdekat, estimasi pemasukan event berbayar.

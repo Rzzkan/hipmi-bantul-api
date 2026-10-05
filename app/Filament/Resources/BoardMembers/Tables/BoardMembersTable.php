@@ -4,6 +4,7 @@ namespace App\Filament\Resources\BoardMembers\Tables;
 
 use App\Models\BoardMember;
 use App\Models\Division;
+use App\Support\Media;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -20,7 +21,7 @@ class BoardMembersTable
     {
         return $table
             ->columns([
-                ImageColumn::make('photo')->label('')->disk('public')->circular(),
+                ImageColumn::make('photo')->label('')->disk(Media::diskName())->circular(),
                 TextColumn::make('name')->label('Nama')->searchable()->description(fn (BoardMember $m) => $m->company),
                 TextColumn::make('position')->label('Jabatan')->searchable(),
                 TextColumn::make('division.name')->label('Bidang')->wrap()->toggleable()
