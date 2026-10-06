@@ -71,8 +71,8 @@ class ManageSettings extends Page
                             TextInput::make('url')->url()->required(),
                         ])->columns(2)->defaultItems(0),
                         Grid::make(2)->schema([
-                            CmsFields::image('site.logo', 'Logo', 'site'),
-                            CmsFields::image('site.meta_image', 'Gambar share default (OG)', 'site'),
+                            CmsFields::image('site.logo', 'Logo', 'site', 'logo'),
+                            CmsFields::image('site.meta_image', 'Gambar share default (OG)', 'site', 'og'),
                         ]),
                     ]),
                     Tab::make('Header')->icon(Heroicon::OutlinedBars3)->schema([

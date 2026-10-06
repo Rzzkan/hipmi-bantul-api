@@ -33,7 +33,7 @@ class PostForm
                 Section::make('Detail')->schema([
                     Select::make('category')->label('Kategori')->options(Post::CATEGORIES)->default('berita')->required()->native(false),
                     TextInput::make('author_name')->label('Penulis')->default(fn () => auth()->user()?->name),
-                    CmsFields::image('cover_image', 'Gambar sampul', 'posts'),
+                    CmsFields::image('cover_image', 'Gambar sampul', 'posts', 'cover'),
                 ]),
             ])->columnSpan(1),
         ]);

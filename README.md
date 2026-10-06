@@ -113,6 +113,31 @@ Perintah migrasi aman dijalankan berulang (file yang sudah ada di R2 dilewati). 
 
 Di website (Vercel), set `CMS_MEDIA_CDN_URL` ke URL publik yang sama (`https://media.hipmibantul.com`) supaya `next/image` mengizinkan domain tersebut (`*.r2.dev` sudah diizinkan otomatis).
 
+## Upload gambar & kompresi otomatis
+
+Setiap kolom gambar di admin bisa diisi dengan **pilih file dari komputer/HP** atau tombol **"Ambil dari URL"** (link biasa, Google Drive, atau Dropbox yang dibagikan publik). Gambar dari URL diunduh lalu disimpan di R2, jadi tidak bergantung pada situs asal.
+
+Semua gambar **dikompres di server sebelum disimpan** (`App\Support\ImageOptimizer`), disesuaikan dengan ukuran tampilnya di website:
+
+| Preset | Dipakai untuk | Ukuran maks. | Format |
+|---|---|---|---|
+| `hero` | Gambar hero halaman | 2400×1600 | WebP 78% |
+| `block` | Block gambar di halaman | 2000×2000 | WebP 80% |
+| `cover` | Sampul berita & program | 1600×1600 | WebP 80% |
+| `poster` | Poster agenda (sering portrait) | 1600×2000 | WebP 82% |
+| `avatar` | Foto pengurus (crop persegi) | 600×600 | WebP 82% |
+| `logo` | Logo partner & situs (transparansi tetap) | 600×600 | WebP 90% (SVG tidak diubah) |
+| `og` | Gambar share WhatsApp/Facebook | tepat 1200×630 | JPEG 85% |
+| `editor` | Gambar di dalam isi artikel | 1600×1600 | WebP 80% |
+
+Contoh: foto HP 1,5 MB → ±130 KB. Gambar kecil tidak diperbesar, rotasi foto HP diperbaiki otomatis, GIF animasi tidak diubah. Batas upload 15 MB (sebelum kompresi).
+
+Mengompres gambar lama yang sudah terlanjur di-upload (path & format tetap, aman diulang):
+```bash
+php artisan media:optimize --dry-run   # lihat perkiraan penghematan
+php artisan media:optimize
+```
+
 ## Fitur admin untuk OKK
 - **Pendaftar**: badge jumlah yang menunggu, tombol WA langsung, terima/tolak, catatan internal, **export CSV**.
 - **Dashboard**: pendaftar menunggu, agenda terdekat, estimasi pemasukan event berbayar.

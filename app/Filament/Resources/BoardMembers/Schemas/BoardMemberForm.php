@@ -63,7 +63,7 @@ class BoardMemberForm
                 ]),
             ]),
             Section::make()->columnSpan(1)->schema([
-                CmsFields::image('photo', 'Foto', 'board')->avatar()->imageCropAspectRatio('1:1'),
+                CmsFields::image('photo', 'Foto', 'board', 'avatar')->avatar()->imageCropAspectRatio('1:1'),
                 TextInput::make('sort_order')->label('Urutan')->numeric()->default(0),
                 Toggle::make('is_active')->label('Tampilkan di website')->default(true),
             ]),

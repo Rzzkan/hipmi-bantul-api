@@ -37,7 +37,7 @@ class ProgramForm
                     Toggle::make('registration_open')->label('Pendaftaran dibuka')->default(true),
                     Toggle::make('is_featured')->label('Unggulan'),
                     TextInput::make('sort_order')->label('Urutan')->numeric()->default(0),
-                    CmsFields::image('cover_image', 'Gambar sampul', 'programs'),
+                    CmsFields::image('cover_image', 'Gambar sampul', 'programs', 'cover'),
                 ]),
             ])->columnSpan(1),
         ]);

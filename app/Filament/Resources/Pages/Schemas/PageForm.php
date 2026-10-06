@@ -44,7 +44,7 @@ class PageForm
                         Tab::make('SEO')->icon(Heroicon::OutlinedMagnifyingGlass)->schema([
                             TextInput::make('meta_title')->label('Meta title')->maxLength(70),
                             Textarea::make('meta_description')->label('Meta description')->maxLength(160)->rows(3),
-                            CmsFields::image('meta_image', 'Gambar share (OG image)', 'seo'),
+                            CmsFields::image('meta_image', 'Gambar share (OG image)', 'seo', 'og'),
                         ]),
                     ])->persistTabInQueryString(),
                 ])->columnSpan(2),
@@ -73,7 +73,7 @@ class PageForm
                 ->visible(fn (Get $get) => $get('hero.type') !== 'none'),
             CmsFields::links('hero.links', 2)
                 ->visible(fn (Get $get) => $get('hero.type') !== 'none'),
-            CmsFields::image('hero.media', 'Gambar hero', 'hero')
+            CmsFields::image('hero.media', 'Gambar hero', 'hero', 'hero')
                 ->visible(fn (Get $get) => in_array($get('hero.type'), ['highImpact', 'mediumImpact'])),
         ];
     }
@@ -109,7 +109,7 @@ class PageForm
                     ->label('Gambar')
                     ->icon(Heroicon::OutlinedPhoto)
                     ->schema([
-                        CmsFields::image('media', 'Gambar', 'blocks')->required(),
+                        CmsFields::image('media', 'Gambar', 'blocks', 'block')->required(),
                         TextInput::make('caption')->label('Keterangan'),
                     ]),
                 Block::make('cta')

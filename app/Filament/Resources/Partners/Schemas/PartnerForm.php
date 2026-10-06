@@ -20,7 +20,7 @@ class PartnerForm
                 TextInput::make('url')->label('Website')->url(),
                 Select::make('tier')->options(Partner::TIERS)->default('partner')->required()->native(false),
                 TextInput::make('sort_order')->label('Urutan')->numeric()->default(0),
-                CmsFields::image('logo', 'Logo', 'partners'),
+                CmsFields::image('logo', 'Logo', 'partners', 'logo'),
                 Toggle::make('is_active')->label('Tampilkan')->default(true),
             ]),
         ]);

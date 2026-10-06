@@ -42,7 +42,7 @@ class EventForm
                         ->helperText('Kosongkan jika tidak dibatasi'),
                     Toggle::make('registration_open')->label('Pendaftaran dibuka')->default(true),
                 ]),
-                Section::make()->schema([CmsFields::image('cover_image', 'Poster / sampul', 'events')]),
+                Section::make()->schema([CmsFields::image('cover_image', 'Poster / sampul', 'events', 'poster')]),
             ])->columnSpan(1),
         ]);
     }
