@@ -163,18 +163,11 @@ class PageForm
                             ->searchable()->native(false),
                     ]),
                 Block::make('partners')
-                    ->label('Partner & Sponsor')
+                    ->label('Logo Partner & Sponsor')
                     ->icon(Heroicon::OutlinedBuildingOffice2)
                     ->schema([
-                        CmsFields::richText('introContent', 'Intro'),
-                        Select::make('tier')->label('Tier (kosong = semua)')->options(Partner::TIERS)->native(false),
-                        Grid::make(3)->schema([
-                            TextInput::make('limit')->label('Logo yang tampil awal')->numeric()->minValue(0)->maxValue(50)->default(10)
-                                ->helperText('0 = tampilkan semua. Sisanya muncul saat tombol "Lihat lebih banyak" diklik.'),
-                            TextInput::make('moreLabel')->label('Teks tombol')->default('Lihat Lebih Banyak Mitra'),
-                            TextInput::make('moreUrl')->label('Link tombol (opsional)')->placeholder('/mitra atau https://...')
-                                ->helperText('Kosongkan: tombol membuka logo lainnya di halaman yang sama.'),
-                        ]),
+                        Select::make('tier')->label('Tier (kosong = semua)')->options(Partner::TIERS)->native(false)
+                            ->helperText('Hanya logo yang ditampilkan. Partner tanpa logo tidak muncul. Kelola logo di menu Partner.'),
                     ]),
                 Block::make('form')
                     ->label('Formulir pendaftaran (bawaan website)')

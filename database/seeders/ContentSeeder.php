@@ -261,7 +261,7 @@ class ContentSeeder extends Seeder
                 $this->block('archive', ['introContent' => '<h2>Program Kami</h2><p>Program yang bisa kamu ikuti, baik sebagai anggota maupun pelaku UMKM.</p>', 'relationTo' => 'programs', 'limit' => 4]),
                 $this->block('archive', ['introContent' => '<h2>Agenda Terdekat</h2>', 'relationTo' => 'events', 'limit' => 3]),
                 $this->block('archive', ['introContent' => '<h2>Kabar Terbaru</h2>', 'relationTo' => 'posts', 'limit' => 3]),
-                $this->block('partners', ['introContent' => '<h2>Didukung Oleh</h2><p>Bersinergi bersama mitra yang menguatkan ekonomi Bantul</p>', 'limit' => 10, 'moreLabel' => 'Lihat Lebih Banyak Mitra']),
+                $this->block('partners', []),
                 $this->block('cta', [
                     'richText' => '<h3>Siap tumbuh bareng <strong>pengusaha muda Bantul</strong>?</h3><p>Daftar sekarang dan tim OKK akan menghubungi kamu untuk tahap selanjutnya.</p>',
                     'links' => [$this->link('Daftar Anggota', '/daftar')],

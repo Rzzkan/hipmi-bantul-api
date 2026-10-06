@@ -86,13 +86,9 @@ class BlockSerializer
                 ),
             ],
             'partners' => [
-                'introContent' => Html::clean($data['introContent'] ?? null),
                 'partners' => PartnerResource::collection(
-                    Partner::active()->when($data['tier'] ?? null, fn ($q, $t) => $q->where('tier', $t))->get()
+                    Partner::active()->whereNotNull('logo')->where('logo', '!=', '')->when($data['tier'] ?? null, fn ($q, $t) => $q->where('tier', $t))->get()
                 )->resolve(),
-                'limit' => max(0, (int) ($data['limit'] ?? 10)),
-                'moreLabel' => filled($data['moreLabel'] ?? null) ? $data['moreLabel'] : 'Lihat Lebih Banyak Mitra',
-                'moreUrl' => filled($data['moreUrl'] ?? null) ? $data['moreUrl'] : null,
             ],
             'form' => [
                 'formType' => $data['formType'] ?? 'membership',
