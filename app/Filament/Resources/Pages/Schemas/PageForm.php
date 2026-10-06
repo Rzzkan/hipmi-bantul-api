@@ -168,6 +168,13 @@ class PageForm
                     ->schema([
                         CmsFields::richText('introContent', 'Intro'),
                         Select::make('tier')->label('Tier (kosong = semua)')->options(Partner::TIERS)->native(false),
+                        Grid::make(3)->schema([
+                            TextInput::make('limit')->label('Logo yang tampil awal')->numeric()->minValue(0)->maxValue(50)->default(10)
+                                ->helperText('0 = tampilkan semua. Sisanya muncul saat tombol "Lihat lebih banyak" diklik.'),
+                            TextInput::make('moreLabel')->label('Teks tombol')->default('Lihat Lebih Banyak Mitra'),
+                            TextInput::make('moreUrl')->label('Link tombol (opsional)')->placeholder('/mitra atau https://...')
+                                ->helperText('Kosongkan: tombol membuka logo lainnya di halaman yang sama.'),
+                        ]),
                     ]),
                 Block::make('form')
                     ->label('Formulir pendaftaran (bawaan website)')

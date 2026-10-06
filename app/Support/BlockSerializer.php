@@ -90,6 +90,9 @@ class BlockSerializer
                 'partners' => PartnerResource::collection(
                     Partner::active()->when($data['tier'] ?? null, fn ($q, $t) => $q->where('tier', $t))->get()
                 )->resolve(),
+                'limit' => max(0, (int) ($data['limit'] ?? 10)),
+                'moreLabel' => filled($data['moreLabel'] ?? null) ? $data['moreLabel'] : 'Lihat Lebih Banyak Mitra',
+                'moreUrl' => filled($data['moreUrl'] ?? null) ? $data['moreUrl'] : null,
             ],
             'form' => [
                 'formType' => $data['formType'] ?? 'membership',
