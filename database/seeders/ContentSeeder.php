@@ -14,19 +14,43 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 /**
- * Konten contoh agar landing page langsung tampil. Semua teks & nama bisa diubah dari /admin.
+ * Konten awal agar landing page langsung tampil. Semua teks & nama bisa diubah dari /admin.
+ *
+ * AMAN dijalankan ulang di production: hanya membuat data yang belum ada,
+ * tidak pernah menimpa halaman, pengaturan, atau pengurus yang sudah diedit.
  */
 class ContentSeeder extends Seeder
 {
+    public const SEEDED_FLAG = 'system.content_seeded';
+
     public function run(): void
     {
         $this->globals();
-        $this->programs();
-        $this->events();
-        $this->posts();
-        $this->board();
-        $this->partners();
+
+        // Struktur 12 bidang: dibuat sekali saat tabelnya masih kosong.
+        Division::query()->exists() || $this->board();
+
+        // Konten contoh & halaman awal hanya dibuat SEKALI (instalasi pertama). Setelah itu
+        // seeder tidak pernah menambah/mengubah apa pun, jadi data yang dihapus/diubah admin tetap aman.
+        if (Setting::query()->where('key', self::SEEDED_FLAG)->exists()) {
+            return;
+        }
+
+        Program::query()->exists() || $this->programs();
+        Event::query()->exists() || $this->events();
+        Post::query()->exists() || $this->posts();
+        Partner::query()->exists() || $this->partners();
         $this->pages();
+
+        Setting::put(self::SEEDED_FLAG, ['at' => now()->toIso8601String()]);
+    }
+
+    /** Only writes a global setting when it doesn't exist yet (keeps edits made in the admin). */
+    protected function settingDefault(string $key, array $value): void
+    {
+        if (! Setting::query()->where('key', $key)->exists()) {
+            Setting::put($key, $value);
+        }
     }
 
     protected function link(string $label, string $url, string $appearance = 'default'): array
@@ -41,7 +65,7 @@ class ContentSeeder extends Seeder
 
     protected function globals(): void
     {
-        Setting::put('site', [
+        $this->settingDefault('site', [
             'name' => 'BPC HIPMI Bantul',
             'tagline' => 'Himpunan Pengusaha Muda Indonesia — Badan Pengurus Cabang Kabupaten Bantul',
             'email' => 'sekretariat@hipmibantul.com',
@@ -54,7 +78,7 @@ class ContentSeeder extends Seeder
             ],
         ]);
 
-        Setting::put('header', [
+        $this->settingDefault('header', [
             'nav_items' => [
                 $this->link('Beranda', '/'),
                 $this->link('Tentang', '/tentang'),
@@ -65,7 +89,7 @@ class ContentSeeder extends Seeder
             'cta' => $this->link('Daftar Anggota', '/daftar'),
         ]);
 
-        Setting::put('footer', [
+        $this->settingDefault('footer', [
             'about' => 'Wadah pengusaha muda Bantul untuk bertumbuh, berjejaring, dan bersinergi membangun perekonomian daerah.',
             'nav_items' => [
                 $this->link('Tentang Kami', '/tentang'),
@@ -92,7 +116,7 @@ class ContentSeeder extends Seeder
         ];
 
         foreach ($items as $i => [$title, $cat, $featured, $summary, $benefits]) {
-            Program::updateOrCreate(['slug' => Str::slug($title)], [
+            Program::firstOrCreate(['slug' => Str::slug($title)], [
                 'title' => $title,
                 'category' => $cat,
                 'summary' => $summary,
@@ -116,7 +140,7 @@ class ContentSeeder extends Seeder
 
         foreach ($items as [$title, $days, $excerpt, $price, $quota]) {
             $start = now()->addDays($days)->setTime(19, 0);
-            Event::updateOrCreate(['slug' => Str::slug($title)], [
+            Event::firstOrCreate(['slug' => Str::slug($title)], [
                 'title' => $title,
                 'excerpt' => $excerpt,
                 'description' => "<p>{$excerpt}</p><h3>Yang akan didapat</h3><ul><li>Relasi baru sesama pengusaha muda</li><li>Insight praktis dari narasumber</li></ul>",
@@ -140,7 +164,7 @@ class ContentSeeder extends Seeder
         ];
 
         foreach ($items as $i => [$title, $cat]) {
-            Post::updateOrCreate(['slug' => Str::slug($title)], [
+            Post::firstOrCreate(['slug' => Str::slug($title)], [
                 'title' => $title,
                 'category' => $cat,
                 'excerpt' => 'Contoh artikel. Ganti isi ini melalui menu Berita di CMS.',
@@ -171,7 +195,11 @@ class ContentSeeder extends Seeder
     protected function board(): void
     {
         foreach (self::DIVISIONS as $number => $name) {
-            Division::updateOrCreate(['number' => $number], ['name' => $name, 'sort_order' => $number, 'is_active' => true]);
+            Division::firstOrCreate(['number' => $number], ['name' => $name, 'sort_order' => $number, 'is_active' => true]);
+        }
+
+        if (BoardMember::query()->where('is_active', true)->exists()) {
+            return; // pengurus sudah diisi lewat admin
         }
 
         // Nama masih placeholder — ganti lewat menu Pengurus di admin.
@@ -181,13 +209,13 @@ class ContentSeeder extends Seeder
             ['Nama Bendahara', 'Bendahara'],
         ];
         foreach ($inti as $i => [$name, $position]) {
-            BoardMember::updateOrCreate(
+            BoardMember::firstOrCreate(
                 ['level' => BoardMember::LEVEL_INTI, 'position' => $position],
                 ['name' => $name, 'sort_order' => $i, 'is_active' => true],
             );
         }
 
-        BoardMember::updateOrCreate(
+        BoardMember::firstOrCreate(
             ['level' => BoardMember::LEVEL_BIDANG, 'division_id' => Division::where('number', 1)->value('id'), 'position' => 'Ketua Bidang'],
             ['name' => 'Aditya', 'sort_order' => 0, 'is_active' => true],
         );
@@ -196,7 +224,7 @@ class ContentSeeder extends Seeder
     protected function partners(): void
     {
         foreach (['Partner Contoh A', 'Partner Contoh B', 'Media Partner Contoh'] as $i => $name) {
-            Partner::updateOrCreate(['name' => $name], [
+            Partner::firstOrCreate(['name' => $name], [
                 'tier' => $i === 2 ? 'media' : 'partner', 'sort_order' => $i, 'is_active' => true,
             ]);
         }
@@ -204,7 +232,7 @@ class ContentSeeder extends Seeder
 
     protected function pages(): void
     {
-        Page::updateOrCreate(['slug' => 'home'], [
+        Page::firstOrCreate(['slug' => 'home'], [
             'title' => 'Beranda',
             'status' => 'published',
             'meta_description' => 'BPC HIPMI Bantul — wadah pengusaha muda Bantul untuk tumbuh, berjejaring, dan bersinergi.',
@@ -241,7 +269,7 @@ class ContentSeeder extends Seeder
             ],
         ]);
 
-        Page::updateOrCreate(['slug' => 'tentang'], [
+        Page::firstOrCreate(['slug' => 'tentang'], [
             'title' => 'Tentang Kami',
             'status' => 'published',
             'hero' => ['type' => 'lowImpact', 'eyebrow' => 'Tentang Kami', 'richText' => '<h2>Mengenal <strong>BPC HIPMI Bantul</strong></h2><p>Visi, misi, dan orang-orang di balik organisasi.</p>', 'links' => []],
@@ -258,12 +286,13 @@ class ContentSeeder extends Seeder
             ],
         ]);
 
-        Page::updateOrCreate(['slug' => 'daftar'], [
+        Page::firstOrCreate(['slug' => 'daftar'], [
             'title' => 'Daftar Anggota',
             'status' => 'published',
             'hero' => ['type' => 'lowImpact', 'eyebrow' => 'Pendaftaran', 'richText' => '<h2>Bergabung dengan <strong>HIPMI Bantul</strong></h2><p>Isi formulir berikut. Bidang OKK akan menghubungi kamu via WhatsApp.</p>', 'links' => []],
             'layout' => [
-                $this->block('form', ['formType' => 'membership', 'introContent' => null, 'successMessage' => 'Terima kasih! Pendaftaranmu sudah kami terima. Tim OKK akan menghubungimu maksimal 3x24 jam.']),
+                // Sementara memakai Google Form OKK (blok "form" bawaan website tetap tersedia di admin)
+                $this->block('embed', ['introContent' => null, 'url' => 'https://docs.google.com/forms/d/e/1FAIpQLSdqERlT-D7uhlWjWlvcO-KuzFbSDaG4djoAZwvpq6bvawqfeg/viewform', 'height' => 1400, 'buttonLabel' => 'Buka formulir di tab baru']),
                 $this->block('faq', [
                     'introContent' => '<h2>Pertanyaan Umum</h2>',
                     'items' => [

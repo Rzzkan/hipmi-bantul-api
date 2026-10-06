@@ -97,10 +97,18 @@ class BlockSerializer
                 'successMessage' => $data['successMessage'] ?? 'Terima kasih! Data kamu sudah kami terima. Tim kami akan segera menghubungi.',
                 'options' => self::formOptions($data['formType'] ?? 'membership'),
             ],
+            'embed' => GoogleForm::isValid($data['url'] ?? null) ? [
+                'provider' => 'google-form',
+                'introContent' => Html::clean($data['introContent'] ?? null),
+                'embedUrl' => GoogleForm::embedUrl($data['url']),
+                'openUrl' => GoogleForm::openUrl($data['url']),
+                'height' => max(400, min(5000, (int) ($data['height'] ?? 1400))),
+                'buttonLabel' => $data['buttonLabel'] ?? 'Buka formulir di tab baru',
+            ] : null,
             default => $data,
         };
 
-        return $base + $payload;
+        return $payload === null ? null : $base + $payload;
     }
 
     protected static function archive(array $data): array

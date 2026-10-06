@@ -7,6 +7,7 @@ use App\Models\Division;
 use App\Models\Partner;
 use App\Models\Post;
 use App\Models\Program;
+use App\Support\GoogleForm;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\Repeater;
@@ -169,7 +170,7 @@ class PageForm
                         Select::make('tier')->label('Tier (kosong = semua)')->options(Partner::TIERS)->native(false),
                     ]),
                 Block::make('form')
-                    ->label('Formulir pendaftaran')
+                    ->label('Formulir pendaftaran (bawaan website)')
                     ->icon(Heroicon::OutlinedClipboardDocumentList)
                     ->schema([
                         Select::make('formType')->label('Jenis formulir')->options([
@@ -179,6 +180,26 @@ class PageForm
                         ])->default('membership')->required()->native(false),
                         CmsFields::richText('introContent', 'Intro'),
                         Textarea::make('successMessage')->label('Pesan setelah submit')->rows(2),
+                    ]),
+                Block::make('embed')
+                    ->label('Embed Google Form')
+                    ->icon(Heroicon::OutlinedDocumentText)
+                    ->schema([
+                        CmsFields::richText('introContent', 'Intro'),
+                        TextInput::make('url')
+                            ->label('Link Google Form')
+                            ->placeholder('https://docs.google.com/forms/d/e/…/viewform')
+                            ->helperText('Tempel link dari tombol "Kirim" di Google Form. Pastikan form tidak mewajibkan login Google, supaya bisa diisi langsung di website.')
+                            ->required()
+                            ->url()
+                            ->rule(fn () => function (string $attribute, $value, \Closure $fail) {
+                                if (! GoogleForm::isValid($value)) {
+                                    $fail('Gunakan link Google Form (docs.google.com/forms/… atau forms.gle/…).');
+                                }
+                            }),
+                        TextInput::make('height')->label('Tinggi (px)')->numeric()->minValue(400)->maxValue(5000)->default(1400)
+                            ->helperText('Sesuaikan dengan panjang form agar tidak perlu scroll di dalam kotak.'),
+                        TextInput::make('buttonLabel')->label('Teks tombol buka di tab baru')->default('Buka formulir di tab baru'),
                     ]),
                 Block::make('faq')
                     ->label('FAQ')
