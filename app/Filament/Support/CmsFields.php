@@ -93,7 +93,8 @@ class CmsFields
             ->directory($directory)
             ->visibility('public')
             ->maxSize(ImageOptimizer::MAX_UPLOAD_KB)
-            ->helperText('Pilih dari komputer/HP atau klik "Ambil dari URL". Otomatis dikompres ke '.strtoupper($p['format'])." {$size}.")
+            ->placeholder('<span class="filepond--label-action">Pilih gambar</span> dari komputer / galeri HP, atau seret ke sini')
+            ->helperText('Bisa juga lewat tombol "Ambil dari URL". Otomatis dikompres ke '.strtoupper($p['format'])." {$size}.")
             ->saveUploadedFileUsing(fn (TemporaryUploadedFile $file) => ImageOptimizer::store($file, $preset, $directory))
             ->hintAction(
                 Action::make('fromUrl')
