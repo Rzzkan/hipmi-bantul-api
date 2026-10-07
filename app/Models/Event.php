@@ -3,13 +3,17 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasPublishing;
+use App\Models\Concerns\NormalizesMediaPaths;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
 {
-    use HasPublishing;
+    use HasPublishing, NormalizesMediaPaths;
+
+    /** Image/HTML columns stored as paths (see MediaPaths). */
+    protected array $mediaAttributes = ['cover_image', 'description'];
 
     protected $fillable = [
         'title', 'slug', 'excerpt', 'cover_image', 'description', 'start_at', 'end_at', 'location',

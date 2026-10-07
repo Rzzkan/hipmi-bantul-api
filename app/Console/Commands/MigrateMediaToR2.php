@@ -70,6 +70,8 @@ class MigrateMediaToR2 extends Command
         $this->info(($dry ? '[dry-run] baris konten yang akan diperbarui: ' : 'Baris konten diperbarui: ').$updated);
 
         if (! $dry) {
+            // Simpan semua gambar sebagai path (bukan URL lengkap) — mengikuti Base URL di admin.
+            $this->call('media:normalize-urls');
             $this->newLine();
             $this->warn('Langkah terakhir: set MEDIA_DISK=r2 di .env lalu jalankan: php artisan config:clear');
         }

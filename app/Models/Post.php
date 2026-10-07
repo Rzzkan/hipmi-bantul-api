@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasPublishing;
+use App\Models\Concerns\NormalizesMediaPaths;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    use HasPublishing;
+    use HasPublishing, NormalizesMediaPaths;
 
     public const CATEGORIES = [
         'berita' => 'Berita',
@@ -15,6 +16,9 @@ class Post extends Model
         'opini' => 'Opini',
         'pengumuman' => 'Pengumuman',
     ];
+
+    /** Image/HTML columns stored as paths (see MediaPaths). */
+    protected array $mediaAttributes = ['cover_image', 'content'];
 
     protected $fillable = [
         'title', 'slug', 'category', 'excerpt', 'cover_image', 'content', 'author_name',

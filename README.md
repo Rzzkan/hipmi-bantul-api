@@ -111,6 +111,22 @@ php artisan optimize
 ```
 Perintah migrasi aman dijalankan berulang (file yang sudah ada di R2 dilewati). Path gambar di database tidak berubah; hanya URL absolut di dalam konten rich text yang diperbarui.
 
+### Gambar disimpan sebagai path + Base URL dari admin
+
+Database **hanya menyimpan path** gambar (mis. `posts/01jabc….webp`), tidak pernah URL lengkap — termasuk gambar di dalam artikel (`<img data-id="editor/…">`) dan blok halaman. URL publik dibentuk saat API merespons dari **Base URL** di:
+
+> Admin → **Pengaturan Situs → Media (R2)** → *Base URL publik bucket R2* (tombol **Tes** untuk cek bucket & akses publik)
+
+Kosongkan untuk memakai `R2_PUBLIC_URL` dari `.env`. Ganti domain (mis. dari `pub-xxxx.r2.dev` ke `media.hipmibantul.com`) cukup di situ — semua gambar ikut berubah dan cache web otomatis di-refresh. Web (Next.js) sudah mengizinkan `*.r2.dev` dan `*.hipmibantul.com`; domain lain → isi `CMS_MEDIA_CDN_URL` di Vercel.
+
+Data lama yang terlanjur berisi URL lengkap dikonversi otomatis oleh `php artisan migrate`, atau manual:
+
+```bash
+php artisan media:normalize-urls --dry-run    # lihat yang akan berubah
+php artisan media:normalize-urls              # URL milik sendiri → path
+php artisan media:normalize-urls --download   # + pindahkan gambar dari situs lain ke R2
+```
+
 Di website (Vercel), set `CMS_MEDIA_CDN_URL` ke URL publik yang sama (`https://media.hipmibantul.com`) supaya `next/image` mengizinkan domain tersebut (`*.r2.dev` sudah diizinkan otomatis).
 
 ## Upload gambar & kompresi otomatis

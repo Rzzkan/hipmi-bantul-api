@@ -36,6 +36,7 @@ class FrontendRevalidator
             $model instanceof Program => ['programs', "program:{$model->slug}", 'pages'],
             $model instanceof BoardMember => ['board-members', 'pages'],
             $model instanceof Partner => ['partners', 'pages'],
+            $model instanceof Setting && $model->key === MediaPaths::SETTING_KEY => ['globals', 'pages', 'posts', 'events', 'programs', 'board-members', 'partners'],
             $model instanceof Setting => ['globals'],
             default => [],
         };

@@ -13,15 +13,18 @@ class Media
         return config('filesystems.media_disk', 'public');
     }
 
-    /** Convert a stored path (public disk) into an absolute URL for the frontend. */
+    /** Convert a stored path into an absolute URL (base URL from admin → Pengaturan → Media). */
     public static function url(?string $path): ?string
     {
         if (blank($path)) {
             return null;
         }
 
-        if (Str::startsWith($path, ['http://', 'https://'])) {
-            return $path;
+        // Legacy full URL to our own storage → path, so it follows the current base URL.
+        $path = MediaPaths::toPath($path);
+
+        if (Str::startsWith($path, ['http://', 'https://', '//'])) {
+            return $path; // external image
         }
 
         return Storage::disk(static::diskName())->url($path);

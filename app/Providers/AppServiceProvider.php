@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Support\FrontendRevalidator;
+use App\Support\MediaPaths;
 use App\Support\R2Filesystem;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -24,5 +25,8 @@ class AppServiceProvider extends ServiceProvider
         FrontendRevalidator::register();
 
         Storage::extend('r2', fn ($app, array $config) => R2Filesystem::make($config));
+
+        // Base URL R2 dapat diatur dari admin (Pengaturan Situs → Media).
+        MediaPaths::applyConfiguredBaseUrl();
     }
 }

@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasPublishing;
+use App\Models\Concerns\NormalizesMediaPaths;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Program extends Model
 {
-    use HasPublishing;
+    use HasPublishing, NormalizesMediaPaths;
 
     public const CATEGORIES = [
         'okk' => 'Kaderisasi (OKK)',
@@ -17,6 +18,9 @@ class Program extends Model
         'networking' => 'Networking & Sinergi',
         'pelatihan' => 'Pelatihan',
     ];
+
+    /** Image/HTML columns stored as paths (see MediaPaths). */
+    protected array $mediaAttributes = ['cover_image', 'description'];
 
     protected $fillable = [
         'title', 'slug', 'category', 'summary', 'cover_image', 'description', 'benefits', 'price',

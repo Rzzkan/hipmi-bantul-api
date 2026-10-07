@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\NormalizesMediaPaths;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
@@ -10,6 +11,11 @@ use Illuminate\Support\Facades\Cache;
  */
 class Setting extends Model
 {
+    use NormalizesMediaPaths;
+
+    /** Image/HTML columns stored as paths (see MediaPaths). */
+    protected array $mediaAttributes = ['value'];
+
     protected $fillable = ['key', 'value'];
 
     protected function casts(): array

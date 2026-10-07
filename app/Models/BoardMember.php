@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\NormalizesMediaPaths;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BoardMember extends Model
 {
+    use NormalizesMediaPaths;
+
     public const LEVEL_INTI = 'inti';
 
     public const LEVEL_BIDANG = 'bidang';
@@ -27,6 +30,9 @@ class BoardMember extends Model
         self::LEVEL_BIDANG => ['Ketua Bidang', 'Wakil Ketua Bidang', 'Sekretaris Bidang'],
         self::LEVEL_KOMPARTEMEN => ['Ketua Kompartemen', 'Wakil Ketua Kompartemen', 'Anggota Kompartemen'],
     ];
+
+    /** Image/HTML columns stored as paths (see MediaPaths). */
+    protected array $mediaAttributes = ['photo'];
 
     protected $fillable = [
         'name', 'position', 'level', 'division_id', 'compartment_id', 'photo', 'company', 'bio',
