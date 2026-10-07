@@ -61,7 +61,7 @@ return [
             'bucket' => env('R2_BUCKET'),
             // https://<ACCOUNT_ID>.r2.cloudflarestorage.com
             'endpoint' => env('R2_ENDPOINT'),
-            // URL publik bucket: custom domain (mis. https://media.hipmibantul.com) atau https://pub-xxxx.r2.dev
+            // URL publik bucket: custom domain (mis. https://media.hipmibantul.site) atau https://pub-xxxx.r2.dev
             'url' => env('R2_PUBLIC_URL'),
             // Folder di dalam bucket, supaya bisa berbagi bucket dengan Katalog Bisnis
             'root' => env('R2_ROOT', 'cms'),

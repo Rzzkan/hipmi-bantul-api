@@ -86,29 +86,29 @@ class MediaPathsTest extends TestCase
             ->assertSee('Base URL publik bucket R2')
             ->set('data.site.name', 'BPC HIPMI Bantul')
             ->set('data.header.cta', ['label' => 'Daftar', 'url' => '/daftar', 'appearance' => 'default', 'newTab' => false])
-            ->set('data.media.public_url', 'https://media.hipmibantul.com/')
+            ->set('data.media.public_url', 'https://media.hipmibantul.site/')
             ->call('save')
             ->assertHasNoFormErrors();
 
         $media = Setting::get(MediaPaths::SETTING_KEY);
-        $this->assertSame('https://media.hipmibantul.com', $media['public_url']);
+        $this->assertSame('https://media.hipmibantul.site', $media['public_url']);
         $this->assertContains('https://pub-old.r2.dev', $media['previous_urls'], 'old base kept so stray old URLs still convert');
 
         $data = $this->getJson("/api/v1/posts/{$post->slug}")->json('data');
-        $this->assertSame('https://media.hipmibantul.com/cms/posts/abc.webp', $data['coverImage']);
-        $this->assertStringContainsString('src="https://media.hipmibantul.com/cms/editor/f.webp"', $data['content']);
+        $this->assertSame('https://media.hipmibantul.site/cms/posts/abc.webp', $data['coverImage']);
+        $this->assertStringContainsString('src="https://media.hipmibantul.site/cms/editor/f.webp"', $data['content']);
 
         // the setting is applied on every boot (next request)
         Storage::forgetDisk('r2');
         config(['filesystems.disks.r2.url' => 'https://pub-old.r2.dev']);
         MediaPaths::applyConfiguredBaseUrl();
-        $this->assertSame('https://media.hipmibantul.com/cms/x.webp', Storage::disk('r2')->url('x.webp'));
+        $this->assertSame('https://media.hipmibantul.site/cms/x.webp', Storage::disk('r2')->url('x.webp'));
 
         // a URL pasted with the OLD domain is still stored as a path
         $old = $this->makePost(['title' => 'Lama', 'cover_image' => 'https://pub-old.r2.dev/cms/posts/old.webp']);
         $this->assertSame('posts/old.webp', DB::table('posts')->where('id', $old->id)->value('cover_image'));
 
-        $this->assertSame('https://media.hipmibantul.com/cms/posts/old.webp', $this->getJson("/api/v1/posts/{$old->slug}")->json('data.coverImage'));
+        $this->assertSame('https://media.hipmibantul.site/cms/posts/old.webp', $this->getJson("/api/v1/posts/{$old->slug}")->json('data.coverImage'));
     }
 
     public function test_invalid_base_url_is_rejected(): void
@@ -128,12 +128,12 @@ class MediaPathsTest extends TestCase
         Http::fake(function ($request) {
             $file = basename(parse_url($request->url(), PHP_URL_PATH));
 
-            return str_starts_with($request->url(), 'https://media.hipmibantul.com/cms/') && Storage::disk('r2')->exists($file)
+            return str_starts_with($request->url(), 'https://media.hipmibantul.site/cms/') && Storage::disk('r2')->exists($file)
                 ? Http::response(Storage::disk('r2')->get($file))
                 : Http::response('nope', 404);
         });
 
-        Livewire::test(ManageSettings::class)->call('testMediaUrl', 'https://media.hipmibantul.com')->assertNotified('Base URL berfungsi');
+        Livewire::test(ManageSettings::class)->call('testMediaUrl', 'https://media.hipmibantul.site')->assertNotified('Base URL berfungsi');
         $this->assertSame([], Storage::disk('r2')->allFiles(), 'probe file is cleaned up');
 
         Livewire::test(ManageSettings::class)->call('testMediaUrl', 'https://salah.example.com')->assertNotified('File uji tidak bisa dibuka lewat Base URL');

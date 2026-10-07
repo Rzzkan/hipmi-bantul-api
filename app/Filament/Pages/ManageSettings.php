@@ -102,8 +102,8 @@ class ManageSettings extends Page
                         TextInput::make('media.public_url')
                             ->label('Base URL publik bucket R2')
                             ->url()
-                            ->placeholder(fn () => config('filesystems.disks.r2.url') ?: 'https://media.hipmibantul.com')
-                            ->helperText(fn () => 'Custom domain (disarankan, mis. https://media.hipmibantul.com) atau https://pub-xxxx.r2.dev — tanpa nama folder. '
+                            ->placeholder(fn () => config('filesystems.disks.r2.url') ?: 'https://media.hipmibantul.site')
+                            ->helperText(fn () => 'Custom domain (disarankan, mis. https://media.hipmibantul.site) atau https://pub-xxxx.r2.dev — tanpa nama folder. '
                                 .'Kosongkan untuk memakai R2_PUBLIC_URL dari .env ('.(env('R2_PUBLIC_URL') ?: 'belum diisi').'). '
                                 .'Folder di bucket: "'.trim((string) config('filesystems.disks.r2.root'), '/').'/" ditambahkan otomatis.')
                             ->suffixAction(

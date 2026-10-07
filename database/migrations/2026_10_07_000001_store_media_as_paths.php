@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Artisan;
 
 /**
- * One-time cleanup: image URLs that were saved in full (e.g. https://media.hipmibantul.com/cms/posts/a.webp)
+ * One-time cleanup: image URLs that were saved in full (e.g. https://media.hipmibantul.site/cms/posts/a.webp)
  * become paths (posts/a.webp). External images are left untouched.
  */
 return new class extends Migration

@@ -83,7 +83,7 @@ Driver `r2` (`app/Support/R2Filesystem.php`) memakai S3 API dengan region `auto`
 ### Setup di Cloudflare (sekali saja)
 1. **R2 → Create bucket**, mis. `hipmi-bantul` (boleh juga memakai bucket Katalog Bisnis — file CMS masuk folder `cms/` lewat `R2_ROOT`).
 2. **Bucket → Settings → Public access**:
-   - **Custom domain** (disarankan): hubungkan `media.hipmibantul.com` (domain harus memakai DNS Cloudflare), atau
+   - **Custom domain** (disarankan): hubungkan `media.hipmibantul.site` (domain harus memakai DNS Cloudflare), atau
    - **r2.dev subdomain**: aktifkan untuk uji coba (dibatasi Cloudflare, tidak untuk production).
 3. **Bucket → Settings → CORS policy** — agar preview gambar di form admin bisa dimuat:
    ```json
@@ -99,7 +99,7 @@ R2_ACCESS_KEY_ID=...
 R2_SECRET_ACCESS_KEY=...
 R2_BUCKET=hipmi-bantul
 R2_ENDPOINT=https://<ACCOUNT_ID>.r2.cloudflarestorage.com
-R2_PUBLIC_URL=https://media.hipmibantul.com
+R2_PUBLIC_URL=https://media.hipmibantul.site
 R2_ROOT=cms
 ```
 ```bash
@@ -117,7 +117,7 @@ Database **hanya menyimpan path** gambar (mis. `posts/01jabc….webp`), tidak pe
 
 > Admin → **Pengaturan Situs → Media (R2)** → *Base URL publik bucket R2* (tombol **Tes** untuk cek bucket & akses publik)
 
-Kosongkan untuk memakai `R2_PUBLIC_URL` dari `.env`. Ganti domain (mis. dari `pub-xxxx.r2.dev` ke `media.hipmibantul.com`) cukup di situ — semua gambar ikut berubah dan cache web otomatis di-refresh. Web (Next.js) sudah mengizinkan `*.r2.dev` dan `*.hipmibantul.com`; domain lain → isi `CMS_MEDIA_CDN_URL` di Vercel.
+Kosongkan untuk memakai `R2_PUBLIC_URL` dari `.env`. Ganti domain (mis. dari `pub-xxxx.r2.dev` ke `media.hipmibantul.site`) cukup di situ — semua gambar ikut berubah dan cache web otomatis di-refresh. Web (Next.js) sudah mengizinkan `*.r2.dev` dan `*.hipmibantul.com`; domain lain → isi `CMS_MEDIA_CDN_URL` di Vercel.
 
 Data lama yang terlanjur berisi URL lengkap dikonversi otomatis oleh `php artisan migrate`, atau manual:
 
@@ -127,7 +127,7 @@ php artisan media:normalize-urls              # URL milik sendiri → path
 php artisan media:normalize-urls --download   # + pindahkan gambar dari situs lain ke R2
 ```
 
-Di website (Vercel), set `CMS_MEDIA_CDN_URL` ke URL publik yang sama (`https://media.hipmibantul.com`) supaya `next/image` mengizinkan domain tersebut (`*.r2.dev` sudah diizinkan otomatis).
+Di website (Vercel), set `CMS_MEDIA_CDN_URL` ke URL publik yang sama (`https://media.hipmibantul.site`) supaya `next/image` mengizinkan domain tersebut (`*.r2.dev` sudah diizinkan otomatis).
 
 ## Upload gambar & kompresi otomatis
 

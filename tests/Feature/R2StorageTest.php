@@ -21,7 +21,7 @@ class R2StorageTest extends TestCase
             'secret' => 'test-secret',
             'bucket' => 'hipmi',
             'endpoint' => 'https://acc123.r2.cloudflarestorage.com',
-            'url' => 'https://media.hipmibantul.com',
+            'url' => 'https://media.hipmibantul.site',
             'root' => 'cms',
             'visibility' => 'public',
             'throw' => true,
@@ -55,7 +55,7 @@ class R2StorageTest extends TestCase
 
     public function test_public_url_uses_custom_domain_and_root(): void
     {
-        $this->assertSame('https://media.hipmibantul.com/cms/posts/cover.jpg', $this->r2()->url('posts/cover.jpg'));
+        $this->assertSame('https://media.hipmibantul.site/cms/posts/cover.jpg', $this->r2()->url('posts/cover.jpg'));
     }
 
     public function test_media_helper_follows_configured_disk(): void

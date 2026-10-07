@@ -56,7 +56,7 @@ class MediaPaths
      * Every base under which our own files have been (or may be) published, so their
      * full URLs can be turned back into paths. Includes old base URLs set in admin.
      *
-     * @return list<string> e.g. ["https://media.hipmibantul.com/cms/", "https://api.hipmibantul.com/storage/"]
+     * @return list<string> e.g. ["https://media.hipmibantul.site/cms/", "https://api.hipmibantul.com/storage/"]
      */
     public static function knownPrefixes(): array
     {
